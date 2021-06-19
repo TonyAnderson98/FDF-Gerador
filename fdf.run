@@ -29,7 +29,7 @@ Opções de ajuda:
     -q, --quiet                 Não mostra nada na saída, é uma excecução quieta
     -k, --keep-temp             Mantém arquivos temporários 
 
-Versão $VERSAO
+$VERSAO
 Para relatos de bugs, por favor veja https://github.com/TonyAnderson98/"
 
 # Verificação de argumentos passados na excecução do programa
