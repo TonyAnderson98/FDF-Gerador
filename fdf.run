@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# =================================================================================
+#						Encontrar o nome dos arquivos .fdf e .xyz
+# =================================================================================
+#	Objetivo:			 -	Encontrar e armazenar em variáveis o nome dos
+#                               arquivos .fdf e .xyz dentro da pasta
+#	Variavel
+#		nome_arquivo_fdf -	Variável que armazena o nome do arquivo fdf
+#		nome_arquivo_xyz -	Variável que armazena o nome do arquivo xyz
+#
+nome_arquivo_fdf=`ls *.fdf` 
+nome_arquivo_xyz=`ls *.xyz`
