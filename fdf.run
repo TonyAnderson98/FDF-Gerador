@@ -29,10 +29,38 @@ Opções de ajuda:
     -v, --version               Exibe a versão do programa e sai
     -V, --verbose               Mostra informações adicionais na saída
     -q, --quiet                 Não mostra nada na saída, é uma excecução quieta
+    -k, --keep-temp             Mantém arquivo temporários gerados durante a execução do programa (arquivos ocultos)
 
 Relate bugs para anderson.tony@discente.ufma.br"
 
+# Verificação de argumentos passados na excecução do programa
 
+case "$1" in
+    -h | --help)
+        echo "$MENSAGEM_AJUDA"
+        exit 0
+        ;;
+    -v | --version)
+        echo "$VERSAO"
+        exit 0
+        ;;
+    -V | --verbose)
+        VERBOSE=1
+        ;;
+    -q | --quiet)
+        QUIET=1
+        ;;
+    -k | --keep-temp)
+        KEEP_TEMP=1
+        ;;
+    *)
+        if test -n "$1"; then
+            echo "$OPCAO_INVALIDA"
+            exit 1
+        fi
+esac
+
+# =================================================================================
 
 
 
@@ -48,4 +76,8 @@ Relate bugs para anderson.tony@discente.ufma.br"
 nome_arquivo_fdf=`ls *.fdf` 
 nome_arquivo_xyz=`ls *.xyz`
 
-
+# Log terminal: Exibir (se necessário) nomes dos arquivos fdf e xyz
+if test "$QUIET" = 0; then
+    echo "Arquivo fdf: $nome_arquivo_fdf"  # Log terminal
+    echo "Arquivo xyz: $nome_arquivo_xyz"  # Log terminal
+fi
