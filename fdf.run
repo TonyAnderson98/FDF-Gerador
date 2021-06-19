@@ -199,13 +199,13 @@ cp *.fdf final_${nome_arquivo_fdf}
 
 
 # =================================================================================
-#							VERIFICANDO SE .copiador.f90 EXISTE
+#							VERIFICANDO SE copiador.f90 EXISTE
 # =================================================================================
-#	Objetivo:			-	Verificar se o arquivo .copiador.f90 existe
-if [ ! -f .copiador.f90 ]; then			# Se .copiador.f90 não existe, crie
+#	Objetivo:			-	Verificar se o arquivo copiador.f90 existe
+if [ ! -f copiador.f90 ]; then			# Se copiador.f90 não existe, crie
 	# Log terminal: Mostrar (se necessário) se estamos criando o arquivo fortran
     test "$QUIET" = 0 && echo "Criando arquivo Fortran"   
-	cat << EOF > .copiador.f90
+	cat << EOF > copiador.f90
         PROGRAM Copiador
             IMPLICIT NONE
 
@@ -264,7 +264,7 @@ if [ ! -f .copiador.f90 ]; then			# Se .copiador.f90 não existe, crie
 EOF
 else
     # Log terminal: Mostrar (se necessário) se o arquivo .f90 já existe
-    test "$QUIET=0" && echo ".copiador.f90 já existe"
+    test "$QUIET=0" && echo "copiador.f90 já existe"
 fi
 
 
@@ -274,8 +274,8 @@ fi
 # =================================================================================
 #	Objetivo:			-	Compilar e excecutar o programa FORTRAN compilado anteriormente
 
-gfortran .copiador.f90 -o .copiador
-./.copiador
+gfortran copiador.f90 -o copiador
+./copiador
 
 
 
@@ -340,7 +340,7 @@ if test "$KEEP_TEMP" = 0; then
     rm AtomicCoordinatesAndAtomicSpecies_trocado.txt
     rm ChemicalSpeciesLabel.txt
     rm ChemicalSpeciesLabel_cortado.txt
-    rm .copiador
+    rm copiador
     rm final_tBN80.fdf
 fi
 
