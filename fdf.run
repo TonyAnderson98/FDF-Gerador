@@ -81,3 +81,100 @@ if test "$QUIET" = 0; then
     echo "Arquivo fdf: $nome_arquivo_fdf"  # Log terminal
     echo "Arquivo xyz: $nome_arquivo_xyz"  # Log terminal
 fi
+
+
+# =================================================================================
+#						ChemicalSpeciesLabel
+# =================================================================================
+#	Objetivo:			-	Identificar a PRIMEIRA e ÚLTIMA linha do "ChemicalSpeciesLabel"
+#	Variavel
+#		numero_linha	-	Variável de loop para armazenar o número da linha que
+#                               está sendo lida no momento
+#       linha           -   O que está sendo lido linha a linha
+#
+numero_linha=1      # Número da linha começa com 1
+
+while IFS= read -r linha; do
+    if [[ $linha == "%block ChemicalSpeciesLabel" ]]; then      # Verificando se a linha atual é o INÍCIO do ChemicalSpeciesLabel
+        let linha_inicial=numero_linha 
+        break
+    fi
+
+    let numero_linha=numero_linha+1
+done < $nome_arquivo_fdf
+
+
+numero_linha=1
+while IFS= read -r linha; do
+
+    if [[ $linha == "%endblock ChemicalSpeciesLabel" ]]; then   # Verificando se a linha atual é o FIM do ChemicalSpeciesLabel
+        let linha_final=numero_linha
+        break
+    fi
+
+    let numero_linha=numero_linha+1
+done < $nome_arquivo_fdf
+
+
+
+
+# Escrevendo a Matriz ChemicalSpeciesLabel
+awk -v s="$linha_inicial" -v e="$linha_final" 'NR>s&&NR<e' $nome_arquivo_fdf > ChemicalSpeciesLabel.txt
+
+
+
+
+# =================================================================================
+#						Extrair simbolos do ChemicalSpeciesLabel
+# =================================================================================
+#	Objetivo:			-	Extrair somente os símbolos do ChemicalSpeciesLabel
+#   Antes:              -   C_lda, B_lda, N_lda
+#   Depois:             -   C, B, N
+
+while IFS=" " read -r ignorar ignorar simbolo
+
+    do echo $simbolo | cut -d"_" -f1
+
+done < ChemicalSpeciesLabel.txt > ChemicalSpeciesLabel_cortado.txt
+
+
+
+
+
+# =================================================================================
+#						AtomicCoordinatesAndAtomicSpecies
+# =================================================================================
+#	Objetivo:			-	Identificar a PRIMEIRA e ÚLTIMA linha do "AtomicCoordinatesAndAtomicSpecies"
+#	Variavel
+#		numero_linha	-	Variável de loop para armazenar o número da linha que
+#                               está sendo lida no momento
+#       linha           -   O que está sendo lido linha a linha
+#
+numero_linha=1      # Número da linha começa com 1
+
+while IFS= read -r linha; do
+    if [[ $linha == "%block AtomicCoordinatesAndAtomicSpecies" ]]; then      # Verificando se a linha atual é o INÍCIO do ChemicalSpeciesLabel
+        let linha_inicial_atomic_coordinates=numero_linha+1 
+        break
+    fi
+
+    let numero_linha=numero_linha+1
+done < $nome_arquivo_fdf
+
+
+numero_linha=1
+while IFS= read -r linha; do
+
+    if [[ $linha == "%endblock AtomicCoordinatesAndAtomicSpecies" ]]; then   # Verificando se a linha atual é o FIM do ChemicalSpeciesLabel
+        let linha_final_atomic_coordinates=numero_linha-1
+        break
+    fi
+
+    let numero_linha=numero_linha+1
+done < $nome_arquivo_fdf
+
+
+# TODO: Melhorar esse loop, colocando as duas condições IF mesmo loop 
+
+# Escrevendo as coordenadas XYZ no arquivo Matriz AtomicCoordinatesAndAtomicSpecies
+awk -v s="2" -v e="500" 'NR>s&&NR<e' $nome_arquivo_xyz > AtomicCoordinatesAndAtomicSpecies.txt
