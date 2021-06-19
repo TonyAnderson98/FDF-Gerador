@@ -2,7 +2,7 @@
 export LC_NUMERIC="en_US.UTF-8"
 dir=`pwd`
 
-
+# Flags
 QUIET=0
 VERBOSE=0
 KEEP_TEMP=0
