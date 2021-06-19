@@ -178,3 +178,164 @@ done < $nome_arquivo_fdf
 
 # Escrevendo as coordenadas XYZ no arquivo Matriz AtomicCoordinatesAndAtomicSpecies
 awk -v s="2" -v e="500" 'NR>s&&NR<e' $nome_arquivo_xyz > AtomicCoordinatesAndAtomicSpecies.txt
+
+
+
+# =================================================================================
+#						Gerar cópia FDF
+# =================================================================================
+#	Objetivo:			-	Gerar uma cópia do arquivo.fdf para arquivo_novo.fdf
+
+cp *.fdf final_${nome_arquivo_fdf}
+
+
+
+# =================================================================================
+#							VERIFICANDO SE .copiador.f90 EXISTE
+# =================================================================================
+#	Objetivo:			-	Verificar se o arquivo .copiador.f90 existe
+if [ ! -f .copiador.f90 ]; then			# Se .copiador.f90 não existe, crie
+	# Log terminal: Mostrar (se necessário) se estamos criando o arquivo fortran
+    test "$QUIET" = 0 && echo "Criando arquivo Fortran"   
+	cat << EOF > .copiador.f90
+        PROGRAM Copiador
+            IMPLICIT NONE
+
+            ! ----------------------------------------------
+            !   Vetores com os simbolos e coordenadas    
+            ! ----------------------------------------------
+                CHARACTER(len=2), DIMENSION(140) :: simbolos
+                CHARACTER(len=2), DIMENSION(140) :: simbolos_cortados
+                REAL, DIMENSION(140) :: x
+                REAL, DIMENSION(140) :: y
+                REAL, DIMENSION(140) :: z
+            ! ----------------------------------------------
+
+            ! ----------------------------------------------
+            !   Variáveis para loops
+            ! ----------------------------------------------
+                INTEGER :: i
+            ! ----------------------------------------------
+
+                ! ----------------------------------------------
+                !           UNIDADES DE ARQUIVOS ABERTOS
+                ! ----------------------------------------------
+                !   5 - ChemicalSpeciesLabel_cortado.txt
+                !  10 - AtomicCoordinatesAndAtomicSpecies.txt
+                !  12 - AtomicCoordinatesAndAtomicSpecies_trocado.txt
+                !  
+                ! ----------------------------------------------
+
+                ! Abrindo arquivo ChemicalSpeciesLabel
+                OPEN(UNIT=5, FILE='ChemicalSpeciesLabel_cortado.txt', status='OLD')
+
+                    DO i=1, 6
+
+                        READ(5,*) simbolos_cortados(i)
+
+                    END DO
+
+                CLOSE(5)    ! Fechando ChemicalSpeciesLabel_cortado.txt
+
+                ! Abrindo 
+                OPEN(UNIT=10, FILE='AtomicCoordinatesAndAtomicSpecies.txt', status='OLD')
+                OPEN(UNIT=12, FILE='AtomicCoordinatesAndAtomicSpecies_trocado.txt', ACTION='WRITE')
+
+                    DO i=1, 140
+
+                        READ(10,*) simbolos(i), x(i), y(i), z(i)    ! Lendo coordenadas linha a linha de [ 10 ]
+                        WRITE(12,100) x(i), y(i), z(i), simbolos(i) ! Gravando matriz com coluna trocada em arquivo texto em [ 12 ]
+                            100 FORMAT (3F17.6  A10)              
+                    END DO
+
+                CLOSE(10)   ! fechando AtomicCoordinatesAndAtomicSpecies
+                CLOSE(12)   ! fechando AtomicCoordinatesAndAtomicSpecies_trocado
+
+
+            END PROGRAM Copiador
+EOF
+else
+    # Log terminal: Mostrar (se necessário) se o arquivo .f90 já existe
+    test "$QUIET=0" && echo ".copiador.f90 já existe"
+fi
+
+
+
+# =================================================================================
+#						Gerar cópia FDF
+# =================================================================================
+#	Objetivo:			-	Compilar e excecutar o programa FORTRAN compilado anteriormente
+
+gfortran .copiador.f90 -o .copiador
+./.copiador
+
+
+
+# =================================================================================
+#						Gerar cópia FDF
+# =================================================================================
+#   Objetivo            -   Trocar simbolo atômico por seu números crescentes
+#   Variável
+#       simbolo         -   Simbolo químico a ser # TODO: continuar aqui e em baixo
+#       numero          -   Número a ser
+#       Antes       Depois
+#         C           1
+#         B           2
+#         N           3
+#   
+numero=1
+while read simbolo
+    do
+
+        sed -i "s/\b$simbolo\b/$numero/g" AtomicCoordinatesAndAtomicSpecies_trocado.txt
+
+        let numero=numero+1
+
+    done < ChemicalSpeciesLabel_cortado.txt
+
+
+
+
+
+# =================================================================================
+#						Remover Coordednadas Originais do FDF
+# =================================================================================
+#	Objetivo:			-	Remover as coordenadas originais do arquivo modelo do fdf
+#                               (vamos apagar para colocar as coordenadas do arquivo xyz)
+#
+sed -i "${linha_inicial_atomic_coordinates},${linha_final_atomic_coordinates}d" final_$nome_arquivo_fdf
+
+
+
+
+
+# Agora que os dados originais das coordenadas foram apagados, vou reescrever com os dados já processados
+let linha_inicial_atomic_coordinates_menos_um=linha_inicial_atomic_coordinates-1
+while IFS=" " read -r x y z numero
+
+    do sed -i "${linha_inicial_atomic_coordinates_menos_um}a\ $(printf "%14.6f" $x) $(printf "%14.6f" $y) $(printf "%14.6f" $z) $(printf "%7d" $numero)" final_tBN80.fdf
+    printf "$xf"
+
+done < AtomicCoordinatesAndAtomicSpecies_trocado.txt 
+
+
+
+
+
+# =================================================================================
+#						Remover arquivos temporários
+# =================================================================================
+#	Objetivo:			-	Remover arquivos temporários 
+#
+rm AtomicCoordinatesAndAtomicSpecies.txt
+rm AtomicCoordinatesAndAtomicSpecies_trocado.txt
+rm ChemicalSpeciesLabel.txt
+rm ChemicalSpeciesLabel_cortado.txt
+rm .copiador
+rm .copiador.f90
+rm final_tBN80.fdf
+
+echo 
+echo "--------------------------------------------"             # Log terminal
+echo " final_${nome_arquivo_fdf} gerado, por favor o revise"    # Log terminal
+echo "--------------------------------------------"             # Log terminal
