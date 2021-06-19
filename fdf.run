@@ -327,15 +327,16 @@ done < AtomicCoordinatesAndAtomicSpecies_trocado.txt
 # =================================================================================
 #						Remover arquivos temporários
 # =================================================================================
-#	Objetivo:			-	Remover arquivos temporários 
+#	Objetivo:			-	Remover (se necessário) arquivos temporários 
 #
-rm AtomicCoordinatesAndAtomicSpecies.txt
-rm AtomicCoordinatesAndAtomicSpecies_trocado.txt
-rm ChemicalSpeciesLabel.txt
-rm ChemicalSpeciesLabel_cortado.txt
-rm .copiador
-rm .copiador.f90
-rm final_tBN80.fdf
+if test "$KEEP_TEMP" = 0; then
+    rm AtomicCoordinatesAndAtomicSpecies.txt
+    rm AtomicCoordinatesAndAtomicSpecies_trocado.txt
+    rm ChemicalSpeciesLabel.txt
+    rm ChemicalSpeciesLabel_cortado.txt
+    rm .copiador
+    rm final_tBN80.fdf
+fi
 
 echo 
 echo "--------------------------------------------"             # Log terminal
