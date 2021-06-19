@@ -1,4 +1,40 @@
 #!/bin/bash
+export LC_NUMERIC="en_US.UTF-8"
+dir=`pwd`
+
+
+
+QUIET=0
+VERBOSE=0
+KEEP_TEMP=0
+
+
+
+# =================================================================================
+#						Ajuda
+# =================================================================================
+VERSAO="FDF gerador - Versão 1.0"
+
+OPCAO_INVALIDA="Opção inválida. Por favor use $0 -h ou $0 --help para ajuda."
+
+MENSAGEM_AJUDA="
+Uso: $0 [-h]
+
+Para o correto funcionamento do fdf.run, você precisa 
+de um arquivo.fdf qualquer (para servir de modelo) e  
+do seu arquivo.xyz com as coordenadas atômicas.
+
+Opções de ajuda:
+    -h, --help                  Exibe todas as opções de ajuda
+    -v, --version               Exibe a versão do programa e sai
+    -V, --verbose               Mostra informações adicionais na saída
+    -q, --quiet                 Não mostra nada na saída, é uma excecução quieta
+
+Relate bugs para anderson.tony@discente.ufma.br"
+
+
+
+
 
 # =================================================================================
 #						Encontrar o nome dos arquivos .fdf e .xyz
@@ -11,3 +47,5 @@
 #
 nome_arquivo_fdf=`ls *.fdf` 
 nome_arquivo_xyz=`ls *.xyz`
+
+
