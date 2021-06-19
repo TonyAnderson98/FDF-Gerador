@@ -14,4 +14,5 @@ $ chmod +x ./fdf.run
 $ ./fdf.run
 ```
 
-
+## Screenshots
+![](/img/ajuda.png)
