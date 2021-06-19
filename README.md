@@ -15,4 +15,4 @@ $ ./fdf.run
 ```
 
 ## Screenshots
-![](/img/ajuda.png)
+![](fig/ajuda.png)
