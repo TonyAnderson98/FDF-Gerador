@@ -11,12 +11,12 @@ KEEP_TEMP=0
 # =================================================================================
 #						Ajuda
 # =================================================================================
-VERSAO="FDF gerador - Versão1.0"
+VERSAO="Versão 1.0"
 
 OPCAO_INVALIDA="Opção inválida. Por favor use $0 -h ou $0 --help para ajuda."
 
 MENSAGEM_AJUDA="
-Uso: $0 [-h]
+Uso: $0 [opção] [...]
 
 Para o correto funcionamento do fdf.run, você precisa 
 de um arquivo.fdf qualquer (para servir de modelo) e  
@@ -27,8 +27,10 @@ Opções de ajuda:
     -v, --version               Exibe a versão do programa e sai
     -V, --verbose               Mostra informações adicionais na saída
     -q, --quiet                 Não mostra nada na saída, é uma excecução quieta
+    -k, --keep-temp             Mantém arquivos temporários 
 
-Relate bugs para anderson.tony@discente.ufma.br"
+Versão $VERSAO
+Para relatos de bugs, por favor veja https://github.com/TonyAnderson98/"
 
 # Verificação de argumentos passados na excecução do programa
 
@@ -36,7 +38,7 @@ while test -n "$1"
 do
     case "$1" in
         -h | --help)
-            echo "$MENSAGEM_AJUDA"
+            echo -e "$MENSAGEM_AJUDA"
             exit 0
             ;;
         -v | --version)
