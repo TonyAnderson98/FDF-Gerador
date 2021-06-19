@@ -32,31 +32,35 @@ Relate bugs para anderson.tony@discente.ufma.br"
 
 # Verificação de argumentos passados na excecução do programa
 
-case "$1" in
-    -h | --help)
-        echo "$MENSAGEM_AJUDA"
-        exit 0
-        ;;
-    -v | --version)
-        echo "$VERSAO"
-        exit 0
-        ;;
-    -V | --verbose)
-        VERBOSE=1
-        ;;
-    -q | --quiet)
-        QUIET=1
-        ;;
-    -k | --keep-temp)
-        KEEP_TEMP=1
-        ;;
-    *)
-        if test -n "$1"; then
-            echo "$OPCAO_INVALIDA"
-            exit 1
-        fi
-esac
-
+while test -n "$1"
+do
+    case "$1" in
+        -h | --help)
+            echo "$MENSAGEM_AJUDA"
+            exit 0
+            ;;
+        -v | --version)
+            echo "$VERSAO"
+            exit 0
+            ;;
+        -V | --verbose)
+            VERBOSE=1
+            ;;
+        -q | --quiet)
+            QUIET=1
+            ;;
+        -k | --keep-temp)
+            KEEP_TEMP=1
+            ;;
+        *)
+            if test -n "$1"; then
+                echo "$OPCAO_INVALIDA"
+                exit 1
+            fi
+    esac
+    # Opção $1 já tratada, deslocando parâmetros posicionais
+    shift
+done
 # =================================================================================
 
 
