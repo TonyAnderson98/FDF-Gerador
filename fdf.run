@@ -3,11 +3,12 @@ export LC_NUMERIC="en_US.UTF-8"
 dir=`pwd`
 
 # Flags
-QUIET=0
+QUIET=FALSE
 VERBOSE=0
 KEEP_TEMP=0
 
 verde="\033[1;32m"
+vermelho="\033[1;31m"
 limpar="\033[0m"
 
 # =================================================================================
@@ -51,7 +52,7 @@ do
             VERBOSE=1
             ;;
         -q | --quiet)
-            QUIET=1
+            QUIET=TRUE
             ;;
         -k | --keep-temp)
             KEEP_TEMP=1
@@ -80,13 +81,24 @@ done
 #		nome_arquivo_fdf -	Variável que armazena o nome do arquivo fdf
 #		nome_arquivo_xyz -	Variável que armazena o nome do arquivo xyz
 #
-nome_arquivo_fdf=`ls *.fdf` 
-nome_arquivo_xyz=`ls *.xyz`
 
+if [ -f *.fdf ]; then
+    nome_arquivo_fdf=`ls *.fdf`
+else
+    printf "${vermelho}Arquivo *.fdf não encontrado. \n${limpar}"    
+    exit 1
+fi
+
+if [ -f *.xyz ]; then
+    nome_arquivo_xyz=`ls *.xyz`
+else
+    printf "${vermelho}Arquivo *.xyz não encontrado. \n${limpar}"    
+    exit 1
+fi
 
 
 # Log terminal: Exibir (se necessário) nomes dos arquivos fdf e xyz
-if test "$QUIET" = 0; then
+if test "$QUIET" = FALSE; then
     printf "Arquivo fdf: ${verde}$nome_arquivo_fdf${limpar} \n"  # Log terminal
     printf "Arquivo xyz: ${verde}$nome_arquivo_xyz${limpar} \n\n"  # Log terminal
 fi
@@ -206,7 +218,7 @@ cp *.fdf final_${nome_arquivo_fdf}
 #	Objetivo:			-	Verificar se o arquivo copiador.f90 existe
 if [ ! -f copiador.f90 ]; then			# Se copiador.f90 não existe, crie
 	# Log terminal: Mostrar (se necessário) se estamos criando o arquivo fortran
-    test "$QUIET" = 0 && echo "Criando arquivo Fortran"   
+    test "$QUIET" = FALSE && echo "Criando arquivo Fortran"   
 	cat << EOF > copiador.f90
         PROGRAM Copiador
             IMPLICIT NONE
@@ -266,7 +278,7 @@ if [ ! -f copiador.f90 ]; then			# Se copiador.f90 não existe, crie
 EOF
 else
     # Log terminal: Mostrar (se necessário) se o arquivo .f90 já existe
-    test "$QUIET" = 0 && echo "copiador.f90 já existe"
+    test "$VERBOSE" = TRUE && echo "copiador.f90 já existe"
 fi
 
 
@@ -348,5 +360,5 @@ fi
 
 echo 
 echo "--------------------------------------------"             # Log terminal
-printf " ${verde}final_${nome_arquivo_fdf}${limpar} gerado, por favor o revise \n"    # Log terminal
-echo "--------------------------------------------"             # Log terminal
+printf " ${verde}final_${nome_arquivo_fdf}${limpar} gerado, por favor o revise \n"
+echo "--------------------------------------------"             
