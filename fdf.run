@@ -7,6 +7,8 @@ QUIET=0
 VERBOSE=0
 KEEP_TEMP=0
 
+verde="\033[1;32m"
+limpar="\033[0m"
 
 # =================================================================================
 #						Ajuda
@@ -85,8 +87,8 @@ nome_arquivo_xyz=`ls *.xyz`
 
 # Log terminal: Exibir (se necessário) nomes dos arquivos fdf e xyz
 if test "$QUIET" = 0; then
-    echo "Arquivo fdf: $nome_arquivo_fdf"  # Log terminal
-    echo "Arquivo xyz: $nome_arquivo_xyz"  # Log terminal
+    printf "Arquivo fdf: ${verde}$nome_arquivo_fdf${limpar} \n"  # Log terminal
+    printf "Arquivo xyz: ${verde}$nome_arquivo_xyz${limpar} \n\n"  # Log terminal
 fi
 
 
@@ -264,7 +266,7 @@ if [ ! -f copiador.f90 ]; then			# Se copiador.f90 não existe, crie
 EOF
 else
     # Log terminal: Mostrar (se necessário) se o arquivo .f90 já existe
-    test "$QUIET=0" && echo "copiador.f90 já existe"
+    test "$QUIET" = 0 && echo "copiador.f90 já existe"
 fi
 
 
@@ -346,5 +348,5 @@ fi
 
 echo 
 echo "--------------------------------------------"             # Log terminal
-echo " final_${nome_arquivo_fdf} gerado, por favor o revise"    # Log terminal
+printf " ${verde}final_${nome_arquivo_fdf}${limpar} gerado, por favor o revise \n"    # Log terminal
 echo "--------------------------------------------"             # Log terminal
