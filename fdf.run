@@ -3,17 +3,15 @@ export LC_NUMERIC="en_US.UTF-8"
 dir=`pwd`
 
 
-
 QUIET=0
 VERBOSE=0
 KEEP_TEMP=0
 
 
-
 # =================================================================================
 #						Ajuda
 # =================================================================================
-VERSAO="FDF gerador - Versão 1.0"
+VERSAO="FDF gerador - Versão1.0"
 
 OPCAO_INVALIDA="Opção inválida. Por favor use $0 -h ou $0 --help para ajuda."
 
@@ -29,7 +27,6 @@ Opções de ajuda:
     -v, --version               Exibe a versão do programa e sai
     -V, --verbose               Mostra informações adicionais na saída
     -q, --quiet                 Não mostra nada na saída, é uma excecução quieta
-    -k, --keep-temp             Mantém arquivo temporários gerados durante a execução do programa (arquivos ocultos)
 
 Relate bugs para anderson.tony@discente.ufma.br"
 
@@ -64,6 +61,8 @@ esac
 
 
 
+
+
 # =================================================================================
 #						Encontrar o nome dos arquivos .fdf e .xyz
 # =================================================================================
@@ -76,11 +75,14 @@ esac
 nome_arquivo_fdf=`ls *.fdf` 
 nome_arquivo_xyz=`ls *.xyz`
 
+
+
 # Log terminal: Exibir (se necessário) nomes dos arquivos fdf e xyz
 if test "$QUIET" = 0; then
     echo "Arquivo fdf: $nome_arquivo_fdf"  # Log terminal
     echo "Arquivo xyz: $nome_arquivo_xyz"  # Log terminal
 fi
+
 
 
 # =================================================================================
@@ -282,7 +284,7 @@ gfortran .copiador.f90 -o .copiador
 #         C           1
 #         B           2
 #         N           3
-#   
+#    
 numero=1
 while read simbolo
     do
