@@ -12,6 +12,41 @@ vermelho="\033[1;31m"
 limpar="\033[0m"
 
 # =================================================================================
+#						Função Quiet
+# =================================================================================
+#	Objetivo:			 -	Exibir logs no terminal se a flag quiet = False
+#	Variavel
+#		$1               -	Mensagem passada na chamada da função
+#
+log_quiet(){
+    if test "$QUIET"=FALSE; then
+        printf "$1"
+    fi
+}
+# =================================================================================
+
+
+# =================================================================================
+#						Função Verbose
+# =================================================================================
+#	Objetivo:			 -	Exibir logs detalhados no terminal se a flag verbose = True
+#	Variavel
+#		$1               -	Mensagem passada na chamada da função
+#
+log_verbose(){
+    if test "$VERBOSE"=TRUE; then
+        printf "$1"
+    fi
+}
+# =================================================================================
+
+
+
+
+
+
+
+# =================================================================================
 #						Ajuda
 # =================================================================================
 VERSAO="Versão 1.0"
@@ -33,7 +68,7 @@ Opções de ajuda:
     -k, --keep-temp             Mantém arquivos temporários 
 
 $VERSAO
-Para relatos de bugs, por favor veja https://github.com/TonyAnderson98/"
+Para relatos de bugs, por favor veja https://github.com/TonyAnderson98/FDF-Gerador"
 
 # Verificação de argumentos passados na excecução do programa
 
@@ -70,8 +105,6 @@ done
 
 
 
-
-
 # =================================================================================
 #						Encontrar o nome dos arquivos .fdf e .xyz
 # =================================================================================
@@ -98,10 +131,12 @@ fi
 
 
 # Log terminal: Exibir (se necessário) nomes dos arquivos fdf e xyz
-if test "$QUIET" = FALSE; then
-    printf "Arquivo fdf: ${verde}$nome_arquivo_fdf${limpar} \n"  # Log terminal
-    printf "Arquivo xyz: ${verde}$nome_arquivo_xyz${limpar} \n\n"  # Log terminal
-fi
+log_quiet "Arquivo fdf: ${verde}$nome_arquivo_fdf${limpar} \n"
+log_quiet "Arquivo xyz: ${verde}$nome_arquivo_xyz${limpar} \n"
+
+
+
+
 
 
 
@@ -209,7 +244,7 @@ awk -v s="2" -v e="500" 'NR>s&&NR<e' $nome_arquivo_xyz > AtomicCoordinatesAndAto
 #	Objetivo:			-	Gerar uma cópia do arquivo.fdf para arquivo_novo.fdf
 
 cp *.fdf final_${nome_arquivo_fdf}
-
+log_verbose "Gerando cópia de $nome_arquivo_fdf \n"
 
 
 # =================================================================================
@@ -218,7 +253,8 @@ cp *.fdf final_${nome_arquivo_fdf}
 #	Objetivo:			-	Verificar se o arquivo copiador.f90 existe
 if [ ! -f copiador.f90 ]; then			# Se copiador.f90 não existe, crie
 	# Log terminal: Mostrar (se necessário) se estamos criando o arquivo fortran
-    test "$QUIET" = FALSE && echo "Criando arquivo Fortran"   
+    log_quiet "Criando arquivo Fortran"
+
 	cat << EOF > copiador.f90
         PROGRAM Copiador
             IMPLICIT NONE
@@ -278,7 +314,7 @@ if [ ! -f copiador.f90 ]; then			# Se copiador.f90 não existe, crie
 EOF
 else
     # Log terminal: Mostrar (se necessário) se o arquivo .f90 já existe
-    test "$VERBOSE" = TRUE && echo "copiador.f90 já existe"
+    log_verbose "copiador.f90 já existe \n"
 fi
 
 
@@ -356,6 +392,8 @@ if test "$KEEP_TEMP" = 0; then
     rm ChemicalSpeciesLabel_cortado.txt
     rm copiador
     rm final_tBN80.fdf
+
+    log_verbose "Deletando arquivos temporários \n"
 fi
 
 echo 
