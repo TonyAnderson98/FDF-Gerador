@@ -19,7 +19,7 @@ limpar="\033[0m"
 #		$1               -	Mensagem passada na chamada da função
 #
 log_quiet(){
-    if test "$QUIET"=FALSE; then
+    if test "$QUIET" = FALSE; then
         printf "$1"
     fi
 }
@@ -34,7 +34,7 @@ log_quiet(){
 #		$1               -	Mensagem passada na chamada da função
 #
 log_verbose(){
-    if test "$VERBOSE"=TRUE; then
+    if test "$VERBOSE" = TRUE; then
         printf "$1"
     fi
 }
@@ -84,13 +84,13 @@ do
             exit 0
             ;;
         -V | --verbose)
-            VERBOSE=1
+            VERBOSE=TRUE
             ;;
         -q | --quiet)
             QUIET=TRUE
             ;;
         -k | --keep-temp)
-            KEEP_TEMP=1
+            KEEP_TEMP=TRUE
             ;;
         *)
             if test -n "$1"; then
@@ -133,7 +133,6 @@ fi
 # Log terminal: Exibir (se necessário) nomes dos arquivos fdf e xyz
 log_quiet "Arquivo fdf: ${verde}$nome_arquivo_fdf${limpar} \n"
 log_quiet "Arquivo xyz: ${verde}$nome_arquivo_xyz${limpar} \n"
-
 
 
 
