@@ -385,14 +385,13 @@ done < AtomicCoordinatesAndAtomicSpecies_trocado.txt
 #	Objetivo:			-	Remover (se necessário) arquivos temporários 
 #
 if test "$KEEP_TEMP" = 0; then
+    log_verbose "Deletando arquivos temporários \n"
+
     rm AtomicCoordinatesAndAtomicSpecies.txt
     rm AtomicCoordinatesAndAtomicSpecies_trocado.txt
     rm ChemicalSpeciesLabel.txt
     rm ChemicalSpeciesLabel_cortado.txt
     rm copiador
-    rm final_tBN80.fdf
-
-    log_verbose "Deletando arquivos temporários \n"
 fi
 
 echo 
