@@ -2,24 +2,25 @@
 export LC_NUMERIC="en_US.UTF-8"
 dir=`pwd`
 
+verde="\033[1;32m"
+vermelho="\033[1;31m"
+limpar="\033[0m"
+
 # =================================================================================
 #						Flags
 # =================================================================================
-# FExecução
+# Execução
 QUIET=FALSE
 VERBOSE=0
 KEEP_TEMP=0
 # Dependências
-DEP_GFORTRAN=TRUE
-DEP_XMAKEMOL=TRUE
-DEP_XCRYSDEN=TRUE
-DEP_XMGRACE=TRUE
-DEP_ZENITY=TRUE
+DEP_GFORTRAN=FALSE
+DEP_XCRYSDEN=FALSE
+DEP_XMAKEMOL=FALSE
+DEP_XMGRACE=FALSE
+DEP_ZENITY=FALSE
 # =================================================================================
 
-verde="\033[1;32m"
-vermelho="\033[1;31m"
-limpar="\033[0m"
 
 # =================================================================================
 #						Função Quiet
@@ -111,48 +112,87 @@ done
 
 
 
+exibir_status_dependencia() {
+    if [ $1 = TRUE ]; then
+        printf "[ ${verde}OK${limpar} ] $2 encontrado em "
+        command -v $3
+    else
+        printf "[${vermelho}ERRO${limpar}] $2 não encontrado! \n"
+    fi
+}
+
+
+
+
+
+
+
 # =================================================================================
-#							VERIFICANDO AS DEPENDÊNCIAS
+#							VERIFICANDO DEPENDÊNCIAS
 # =================================================================================
 #	Objetivo: Verificar se as dependências estão satisfeitas
 # ---------------------------------------------------------------------------------
 
-echo " Verificando dependências"	# log terminal
-if [ ! command -v gfortran &> /dev/null ]; then
-    echo "${vermelho}Erro: gfortran não está instalado${limpar}"
-    DEP_GFORTRAN=FALSE                      # Muda a flag para indicar que a dependência gfortran não está satisfeita
-else
+printf "Verificando dependências:\n\n"
 
-# Log terminal: Exibir (se necessário) a localização das pedendências
-    log_quiet "[ ${verde}OK${limpar} ] FORTRAN encontrado em "
-	command -v gfortran
+if command -v gfortran &> /dev/null; then
+    DEP_GFORTRAN=TRUE
 fi
 # ---------------------------------------------------------------------------------
-if [ ! command -v zenity &> /dev/null ]; then
-    echo "${vermelho}Erro: zenity não está instalado${limpar}"
-    DEP_ZENITY=FALSE                      # Muda a flag para indicar que a dependência xmakemol não está satisfeita
-else
-	printf "[ ${verde}OK${limpar} ] Zenity encontrado em "
-	command -v zenity
+if command -v zenity &> /dev/null; then
+    DEP_ZENITY=TRUE
 fi
 # ---------------------------------------------------------------------------------
-if [ ! command -v xcrysden &> /dev/null ]; then
-    echo "${vermelho}Erro: xcrysden não está instalado${limpar}"
-    DEP_XCRYSDEN=FALSE                      # Muda a flag para indicar que a dependência xcrysden não está satisfeita
-else
-	printf "[ ${verde}OK${limpar} ] xcrysden encontrado em "
-	command -v xcrysden
+if command -v xcrysden &> /dev/null; then
+    DEP_XCRYSDEN=TRUE                   
 fi
 # ---------------------------------------------------------------------------------
-if ! command -v xmakemol &> /dev/null; then
-    printf "[${vermelho}Erro${limpar}] xmakemol não está instalado \n"
-    DEP_XMAKEMOL=FALSE                      # Muda a flag para indicar que a dependência xmakemol não está satisfeita
-else
-	printf "[ ${verde}OK${limpar} ] xmakemol encontrado em "
-	command -v gfortran
+if command -v xmakemol &> /dev/null; then
+    DEP_XMAKEMOL=TRUE                     
 fi
-echo ""
+# ---------------------------------------------------------------------------------
+if command -v xmgrace &> /dev/null; then
+    DEP_XMGRACE=TRUE                     
+fi
 # =================================================================================
+
+
+
+# =================================================================================
+#							Log
+# =================================================================================
+#	Objetivo: 
+# ---------------------------------------------------------------------------------
+exibir_status_dependencia  "$DEP_GFORTRAN" "FORTRAN" "gfortran"
+exibir_status_dependencia  "$DEP_XCRYSDEN" "XCrysDen" "xcrysden"
+exibir_status_dependencia  "$DEP_XMAKEMOL" "Xmakemol" "xmakemol"
+exibir_status_dependencia  "$DEP_XMGRACE"  "Xmgrace" "xmgrace"
+echo ""
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -208,16 +248,17 @@ fi
 
 if [ $DEP_XMAKEMOL = FALSE ]; then
     zenity --question  \
-    --title="xmakemol" \
-    --text "Deseja instalar o xmakemol agora?" \
+    --title="Xmakemol ausente!" \
+    --text "Deseja instalar agora?" \
     --ok-label="Sim" \
     --cancel-label="Não"
 
     if [ $? = 0 ]; then
         sudo apt-get install xmakemol
     else
-        echo "Ok. Não insalaremos o xmakemol, mas não será possível continuar. Saíndo..."
-        exit 1
+        echo "Ok. Não instalaremos o xmakemol. Ainda é possível continuar sem ele,"
+        echo "mas com funcionalidades limitadas (otaro). Continuando..."
+        echo ""
     fi
 fi
 # =================================================================================
