@@ -2,10 +2,20 @@
 export LC_NUMERIC="en_US.UTF-8"
 dir=`pwd`
 
-# Flags
+# =================================================================================
+#						Flags
+# =================================================================================
+# FExecução
 QUIET=FALSE
 VERBOSE=0
 KEEP_TEMP=0
+# Dependências
+DEP_GFORTRAN=TRUE
+DEP_XMAKEMOL=TRUE
+DEP_XCRYSDEN=TRUE
+DEP_XMGRACE=TRUE
+DEP_ZENITY=TRUE
+# =================================================================================
 
 verde="\033[1;32m"
 vermelho="\033[1;31m"
@@ -39,10 +49,6 @@ log_verbose(){
     fi
 }
 # =================================================================================
-
-
-
-
 
 
 
@@ -116,7 +122,9 @@ if [ ! command -v gfortran &> /dev/null ]; then
     echo "${vermelho}Erro: gfortran não está instalado${limpar}"
     DEP_GFORTRAN=FALSE                      # Muda a flag para indicar que a dependência gfortran não está satisfeita
 else
-	printf "[ ${verde}OK${limpar} ] FORTRAN encontrado em "
+
+# Log terminal: Exibir (se necessário) a localização das pedendências
+    log_quiet "[ ${verde}OK${limpar} ] FORTRAN encontrado em "
 	command -v gfortran
 fi
 # ---------------------------------------------------------------------------------
@@ -136,23 +144,22 @@ else
 	command -v xcrysden
 fi
 # ---------------------------------------------------------------------------------
-if [ ! command -v xmakemol &> /dev/null ]; then
-    echo "${vermelho}Erro: xmakemol não está instalado${limpar}"
+if ! command -v xmakemol &> /dev/null; then
+    printf "[${vermelho}Erro${limpar}] xmakemol não está instalado \n"
     DEP_XMAKEMOL=FALSE                      # Muda a flag para indicar que a dependência xmakemol não está satisfeita
 else
-    echo "................rodou aqui..................."
 	printf "[ ${verde}OK${limpar} ] xmakemol encontrado em "
-	command -v xmakemol
+	command -v gfortran
 fi
-
+echo ""
 # =================================================================================
 
 
 
 # =================================================================================
-#						Resolver dependências
+# 						Resolver dependências
 # =================================================================================
-#	Objetivo:			 -	Resolver dependências quebradas
+# 	Objetivo:			 -	Resolver dependências quebradas
 
 if [ $DEP_GFORTRAN = FALSE ]; then
     zenity --question  \
@@ -165,6 +172,7 @@ if [ $DEP_GFORTRAN = FALSE ]; then
         sudo apt-get install gfortran
     else
         echo "Ok. Não insalaremos o gfortran, mas não será possível continuar. Saíndo..."
+        exit 1
     fi
 fi
 
@@ -179,6 +187,7 @@ if [ $DEP_ZENITY = FALSE ]; then
         sudo apt-get install zenity
     else
         echo "Ok. Não insalaremos o zenity. Continuando..."
+        exit 1
     fi
 fi
 
@@ -193,11 +202,11 @@ if [ $DEP_XCRYSDEN = FALSE ]; then
         sudo apt-get install xcrysden
     else
         echo "Ok. Não insalaremos o xcrysden, mas não será possível continuar. Saíndo..."
+        exit 1
     fi
 fi
 
 if [ $DEP_XMAKEMOL = FALSE ]; then
-echo ".........................."
     zenity --question  \
     --title="xmakemol" \
     --text "Deseja instalar o xmakemol agora?" \
@@ -208,18 +217,10 @@ echo ".........................."
         sudo apt-get install xmakemol
     else
         echo "Ok. Não insalaremos o xmakemol, mas não será possível continuar. Saíndo..."
+        exit 1
     fi
 fi
 # =================================================================================
-
-
-
-
-
-
-
-
-
 
 
 
