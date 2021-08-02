@@ -106,6 +106,126 @@ done
 
 
 # =================================================================================
+#							VERIFICANDO AS DEPENDÊNCIAS
+# =================================================================================
+#	Objetivo: Verificar se as dependências estão satisfeitas
+# ---------------------------------------------------------------------------------
+
+echo " Verificando dependências"	# log terminal
+if [ ! command -v gfortran &> /dev/null ]; then
+    echo "${vermelho}Erro: gfortran não está instalado${limpar}"
+    DEP_GFORTRAN=FALSE                      # Muda a flag para indicar que a dependência gfortran não está satisfeita
+else
+	printf "[ ${verde}OK${limpar} ] FORTRAN encontrado em "
+	command -v gfortran
+fi
+# ---------------------------------------------------------------------------------
+if [ ! command -v zenity &> /dev/null ]; then
+    echo "${vermelho}Erro: zenity não está instalado${limpar}"
+    DEP_ZENITY=FALSE                      # Muda a flag para indicar que a dependência xmakemol não está satisfeita
+else
+	printf "[ ${verde}OK${limpar} ] Zenity encontrado em "
+	command -v zenity
+fi
+# ---------------------------------------------------------------------------------
+if [ ! command -v xcrysden &> /dev/null ]; then
+    echo "${vermelho}Erro: xcrysden não está instalado${limpar}"
+    DEP_XCRYSDEN=FALSE                      # Muda a flag para indicar que a dependência xcrysden não está satisfeita
+else
+	printf "[ ${verde}OK${limpar} ] xcrysden encontrado em "
+	command -v xcrysden
+fi
+# ---------------------------------------------------------------------------------
+if [ ! command -v xmakemol &> /dev/null ]; then
+    echo "${vermelho}Erro: xmakemol não está instalado${limpar}"
+    DEP_XMAKEMOL=FALSE                      # Muda a flag para indicar que a dependência xmakemol não está satisfeita
+else
+    echo "................rodou aqui..................."
+	printf "[ ${verde}OK${limpar} ] xmakemol encontrado em "
+	command -v xmakemol
+fi
+
+# =================================================================================
+
+
+
+# =================================================================================
+#						Resolver dependências
+# =================================================================================
+#	Objetivo:			 -	Resolver dependências quebradas
+
+if [ $DEP_GFORTRAN = FALSE ]; then
+    zenity --question  \
+    --title="Gfortran" \
+    --text "Deseja instalar o gfortran agora?" \
+    --ok-label="Sim" \
+    --cancel-label="Não"
+
+    if [ $? = 0 ]; then
+        sudo apt-get install gfortran
+    else
+        echo "Ok. Não insalaremos o gfortran, mas não será possível continuar. Saíndo..."
+    fi
+fi
+
+if [ $DEP_ZENITY = FALSE ]; then
+    zenity --question  \
+    --title="Zenity" \
+    --text "Deseja instalar o zenity agora?" \
+    --ok-label="Sim" \
+    --cancel-label="Não"
+
+    if [ $? = 0 ]; then
+        sudo apt-get install zenity
+    else
+        echo "Ok. Não insalaremos o zenity. Continuando..."
+    fi
+fi
+
+if [ $DEP_XCRYSDEN = FALSE ]; then
+    zenity --question  \
+    --title="xcrysden" \
+    --text "Deseja instalar o xcrysden agora?" \
+    --ok-label="Sim" \
+    --cancel-label="Não"
+
+    if [ $? = 0 ]; then
+        sudo apt-get install xcrysden
+    else
+        echo "Ok. Não insalaremos o xcrysden, mas não será possível continuar. Saíndo..."
+    fi
+fi
+
+if [ $DEP_XMAKEMOL = FALSE ]; then
+echo ".........................."
+    zenity --question  \
+    --title="xmakemol" \
+    --text "Deseja instalar o xmakemol agora?" \
+    --ok-label="Sim" \
+    --cancel-label="Não"
+
+    if [ $? = 0 ]; then
+        sudo apt-get install xmakemol
+    else
+        echo "Ok. Não insalaremos o xmakemol, mas não será possível continuar. Saíndo..."
+    fi
+fi
+# =================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# =================================================================================
 #						Encontrar o nome dos arquivos .fdf e .xyz
 # =================================================================================
 #	Objetivo:			 -	Encontrar e armazenar em variáveis o nome dos
@@ -118,14 +238,14 @@ done
 if [ -f *.fdf ]; then
     nome_arquivo_fdf=`ls *.fdf`
 else
-    printf "${vermelho}Arquivo *.fdf não encontrado. \n${limpar}"    
+    printf "${vermelho}Erro: arquivo *.fdf não encontrado. \n${limpar}"    
     exit 1
 fi
 
 if [ -f *.xyz ]; then
     nome_arquivo_xyz=`ls *.xyz`
 else
-    printf "${vermelho}Arquivo *.xyz não encontrado. \n${limpar}"    
+    printf "${vermelho}Erro: arquivo *.xyz não encontrado.\n${limpar}"    
     exit 1
 fi
 
