@@ -2,7 +2,6 @@
 export LC_NUMERIC="en_US.UTF-8"
 dir=`pwd`
 
-rm final_tBN80-tricloro-1.fdf
 
 verde="\033[1;32m"
 vermelho="\033[1;31m"
@@ -31,10 +30,8 @@ DEP_ZENITY=FALSE
 #	Variavel
 #		$1               -	Mensagem passada na chamada da função
 #
-log_quiet(){
-    if test "$QUIET" = FALSE; then
-        printf "$1"
-    fi
+log_quiet(){    
+    test $QUIET = FALSE && printf "$1"
 }
 # =================================================================================
 
@@ -47,9 +44,7 @@ log_quiet(){
 #		$1               -	Mensagem passada na chamada da função
 #
 log_verbose(){
-    if test "$VERBOSE" = TRUE; then
-        printf "$1"
-    fi
+    test $QUIET = TRUE && printf "$1"
 }
 # =================================================================================
 
@@ -258,9 +253,8 @@ if [ $DEP_XMAKEMOL = FALSE ]; then
     if [ $? = 0 ]; then
         sudo apt-get install xmakemol
     else
-        echo "Ok. Não instalaremos o xmakemol. Ainda é possível continuar sem ele,"
-        echo "mas com funcionalidades limitadas (otaro). Continuando..."
-        echo ""
+        log_quiet "Ok. Não instalaremos o xmakemol. Ainda é possível continuar sem ele,\n"
+        log_quiet "mas com funcionalidades limitadas (otaro). Continuando...\n\n"
     fi
 fi
 # =================================================================================
